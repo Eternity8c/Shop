@@ -83,7 +83,7 @@ func (x *RegisterRequest) GetFullName() string {
 
 type RegisterResponce struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Succes        bool                   `protobuf:"varint,2,opt,name=succes,proto3" json:"succes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -119,11 +119,11 @@ func (*RegisterResponce) Descriptor() ([]byte, []int) {
 	return file_api_proto_auth_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RegisterResponce) GetUserId() string {
+func (x *RegisterResponce) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *RegisterResponce) GetSucces() bool {
@@ -187,8 +187,7 @@ func (x *LoginRequest) GetPassword() string {
 
 type LoginResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -223,41 +222,34 @@ func (*LoginResponse) Descriptor() ([]byte, []int) {
 	return file_api_proto_auth_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *LoginResponse) GetAccessToken() string {
+func (x *LoginResponse) GetToken() string {
 	if x != nil {
-		return x.AccessToken
+		return x.Token
 	}
 	return ""
 }
 
-func (x *LoginResponse) GetRefreshToken() string {
-	if x != nil {
-		return x.RefreshToken
-	}
-	return ""
-}
-
-type ValidateRequest struct {
+type IsAdminRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ValidateRequest) Reset() {
-	*x = ValidateRequest{}
+func (x *IsAdminRequest) Reset() {
+	*x = IsAdminRequest{}
 	mi := &file_api_proto_auth_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ValidateRequest) String() string {
+func (x *IsAdminRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ValidateRequest) ProtoMessage() {}
+func (*IsAdminRequest) ProtoMessage() {}
 
-func (x *ValidateRequest) ProtoReflect() protoreflect.Message {
+func (x *IsAdminRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_auth_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -269,41 +261,39 @@ func (x *ValidateRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ValidateRequest.ProtoReflect.Descriptor instead.
-func (*ValidateRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use IsAdminRequest.ProtoReflect.Descriptor instead.
+func (*IsAdminRequest) Descriptor() ([]byte, []int) {
 	return file_api_proto_auth_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *ValidateRequest) GetAccessToken() string {
+func (x *IsAdminRequest) GetUserId() int64 {
 	if x != nil {
-		return x.AccessToken
+		return x.UserId
 	}
-	return ""
+	return 0
 }
 
-type ValidateResponse struct {
+type IsAdminResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	IsValid       bool                   `protobuf:"varint,1,opt,name=is_valid,json=isValid,proto3" json:"is_valid,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	IsAdmin       bool                   `protobuf:"varint,1,opt,name=is_admin,json=isAdmin,proto3" json:"is_admin,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ValidateResponse) Reset() {
-	*x = ValidateResponse{}
+func (x *IsAdminResponse) Reset() {
+	*x = IsAdminResponse{}
 	mi := &file_api_proto_auth_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ValidateResponse) String() string {
+func (x *IsAdminResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ValidateResponse) ProtoMessage() {}
+func (*IsAdminResponse) ProtoMessage() {}
 
-func (x *ValidateResponse) ProtoReflect() protoreflect.Message {
+func (x *IsAdminResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_auth_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -315,30 +305,16 @@ func (x *ValidateResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ValidateResponse.ProtoReflect.Descriptor instead.
-func (*ValidateResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use IsAdminResponse.ProtoReflect.Descriptor instead.
+func (*IsAdminResponse) Descriptor() ([]byte, []int) {
 	return file_api_proto_auth_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *ValidateResponse) GetIsValid() bool {
+func (x *IsAdminResponse) GetIsAdmin() bool {
 	if x != nil {
-		return x.IsValid
+		return x.IsAdmin
 	}
 	return false
-}
-
-func (x *ValidateResponse) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *ValidateResponse) GetRole() string {
-	if x != nil {
-		return x.Role
-	}
-	return ""
 }
 
 var File_api_proto_auth_proto protoreflect.FileDescriptor
@@ -351,24 +327,21 @@ const file_api_proto_auth_proto_rawDesc = "" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1b\n" +
 	"\tfull_name\x18\x03 \x01(\tR\bfullName\"C\n" +
 	"\x10RegisterResponce\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x16\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x16\n" +
 	"\x06succes\x18\x02 \x01(\bR\x06succes\"@\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"W\n" +
-	"\rLoginResponse\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"4\n" +
-	"\x0fValidateRequest\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\"Z\n" +
-	"\x10ValidateResponse\x12\x19\n" +
-	"\bis_valid\x18\x01 \x01(\bR\aisValid\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
-	"\x04role\x18\x03 \x01(\tR\x04role2\xb5\x01\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"%\n" +
+	"\rLoginResponse\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\")\n" +
+	"\x0eisAdminRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\",\n" +
+	"\x0fisAdminResponse\x12\x19\n" +
+	"\bis_admin\x18\x01 \x01(\bR\aisAdmin2\xb2\x01\n" +
 	"\vAuthService\x129\n" +
 	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponce\x120\n" +
-	"\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x129\n" +
-	"\bValidate\x12\x15.auth.ValidateRequest\x1a\x16.auth.ValidateResponseB4Z2github.com/Eternity8c/shop/auth-service/api/gen/gob\x06proto3"
+	"\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x126\n" +
+	"\aisAdmin\x12\x14.auth.isAdminRequest\x1a\x15.auth.isAdminResponseB4Z2github.com/Eternity8c/shop/auth-service/api/gen/gob\x06proto3"
 
 var (
 	file_api_proto_auth_proto_rawDescOnce sync.Once
@@ -388,16 +361,16 @@ var file_api_proto_auth_proto_goTypes = []any{
 	(*RegisterResponce)(nil), // 1: auth.RegisterResponce
 	(*LoginRequest)(nil),     // 2: auth.LoginRequest
 	(*LoginResponse)(nil),    // 3: auth.LoginResponse
-	(*ValidateRequest)(nil),  // 4: auth.ValidateRequest
-	(*ValidateResponse)(nil), // 5: auth.ValidateResponse
+	(*IsAdminRequest)(nil),   // 4: auth.isAdminRequest
+	(*IsAdminResponse)(nil),  // 5: auth.isAdminResponse
 }
 var file_api_proto_auth_proto_depIdxs = []int32{
 	0, // 0: auth.AuthService.Register:input_type -> auth.RegisterRequest
 	2, // 1: auth.AuthService.Login:input_type -> auth.LoginRequest
-	4, // 2: auth.AuthService.Validate:input_type -> auth.ValidateRequest
+	4, // 2: auth.AuthService.isAdmin:input_type -> auth.isAdminRequest
 	1, // 3: auth.AuthService.Register:output_type -> auth.RegisterResponce
 	3, // 4: auth.AuthService.Login:output_type -> auth.LoginResponse
-	5, // 5: auth.AuthService.Validate:output_type -> auth.ValidateResponse
+	5, // 5: auth.AuthService.isAdmin:output_type -> auth.isAdminResponse
 	3, // [3:6] is the sub-list for method output_type
 	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	AuthService_Register_FullMethodName = "/auth.AuthService/Register"
 	AuthService_Login_FullMethodName    = "/auth.AuthService/Login"
-	AuthService_Validate_FullMethodName = "/auth.AuthService/Validate"
+	AuthService_IsAdmin_FullMethodName  = "/auth.AuthService/isAdmin"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -30,7 +30,7 @@ const (
 type AuthServiceClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponce, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
+	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
 }
 
 type authServiceClient struct {
@@ -61,10 +61,10 @@ func (c *authServiceClient) Login(ctx context.Context, in *LoginRequest, opts ..
 	return out, nil
 }
 
-func (c *authServiceClient) Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error) {
+func (c *authServiceClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ValidateResponse)
-	err := c.cc.Invoke(ctx, AuthService_Validate_FullMethodName, in, out, cOpts...)
+	out := new(IsAdminResponse)
+	err := c.cc.Invoke(ctx, AuthService_IsAdmin_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (c *authServiceClient) Validate(ctx context.Context, in *ValidateRequest, o
 type AuthServiceServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponce, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
+	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -94,8 +94,8 @@ func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest
 func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedAuthServiceServer) Validate(context.Context, *ValidateRequest) (*ValidateResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method Validate not implemented")
+func (UnimplementedAuthServiceServer) IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method IsAdmin not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -154,20 +154,20 @@ func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_Validate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ValidateRequest)
+func _AuthService_IsAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsAdminRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).Validate(ctx, in)
+		return srv.(AuthServiceServer).IsAdmin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AuthService_Validate_FullMethodName,
+		FullMethod: AuthService_IsAdmin_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Validate(ctx, req.(*ValidateRequest))
+		return srv.(AuthServiceServer).IsAdmin(ctx, req.(*IsAdminRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -188,8 +188,8 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_Login_Handler,
 		},
 		{
-			MethodName: "Validate",
-			Handler:    _AuthService_Validate_Handler,
+			MethodName: "isAdmin",
+			Handler:    _AuthService_IsAdmin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

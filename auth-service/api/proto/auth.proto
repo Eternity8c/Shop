@@ -5,7 +5,7 @@ option go_package = "github.com/Eternity8c/shop/auth-service/api/gen/go";
 service AuthService {
     rpc Register(RegisterRequest) returns (RegisterResponce);
     rpc Login(LoginRequest) returns (LoginResponse);
-    rpc Validate(ValidateRequest) returns (ValidateResponse);
+    rpc isAdmin(isAdminRequest) returns(isAdminResponse);
 }
 
 message RegisterRequest {
@@ -15,7 +15,7 @@ message RegisterRequest {
 }
 
 message RegisterResponce {
-  string user_id = 1;
+  int64 user_id = 1;
   bool succes = 2;
 }
 
@@ -25,18 +25,15 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  string access_token = 1;
-  string refresh_token = 2;
+  string token = 1;
 }
 
-message ValidateRequest {
-  string access_token = 1;
+message isAdminRequest {
+    int64 user_id = 1;
 }
 
-message ValidateResponse {
-  bool is_valid = 1;
-  string user_id = 2;
-  string role = 3;
+message isAdminResponse {
+  bool is_admin = 1;
 }
 
 
