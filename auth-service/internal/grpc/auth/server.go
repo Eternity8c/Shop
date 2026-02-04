@@ -13,7 +13,7 @@ import (
 
 type Auth interface {
 	RegisterNewUser(ctx context.Context, email string, password string, fullName string) (userID int64, err error)
-	Login(ctx context.Context, email string, password string) (token string, err error)
+	Login(ctx context.Context, email string, password string) (string, error)
 	IsAdmin(ctx context.Context, userID int64) (bool, error)
 }
 
