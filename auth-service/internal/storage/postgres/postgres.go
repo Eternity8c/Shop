@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -40,7 +41,7 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte, f
 
 	var id int64
 
-	err := s.pool.QueryRow(ctx, stmt, email, passHash, full_name).Scan(&id)
+	err := s.pool.QueryRow(ctx, stmt, full_name, email, passHash).Scan(&id)
 	if err != nil {
 		var pgErr *pgconn.PgError
 
@@ -57,13 +58,13 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte, f
 func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
 	const op = "Storage.Postgres.User"
 
-	stmt := `SELECT id, email, pass_hash, full_name
+	stmt := `SELECT id, full_name, email, pass_hash
 	FROM users
 	WHERE email = $1`
 
 	var user models.User
-
-	err := s.pool.QueryRow(ctx, stmt, email).Scan(&user.ID, &user.Email, &user.PassHash, &user.Full_Name)
+	slog.Info(email)
+	err := s.pool.QueryRow(ctx, stmt, email).Scan(&user.ID, &user.FullName, &user.Email, &user.PassHash)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return models.User{}, fmt.Errorf("%s: %w", op, storage.ErrUserNotFound)
