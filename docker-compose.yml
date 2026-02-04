@@ -51,7 +51,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db_setups/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - /auth-service/migrations/1_init.up.sql:/docker-entrypoint-initdb.d/init_1.sql
+      - ./auth-service/migrations/1_init.up.sql:/docker-entrypoint-initdb.d/init_1.sql
 
 volumes:
   redis_data:
