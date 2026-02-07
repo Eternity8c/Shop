@@ -1,0 +1,3 @@
+include:
+  - path_to_prometheus.yml
+  - path_to_grafana.yml

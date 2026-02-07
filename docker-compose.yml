@@ -1,4 +1,7 @@
+#include:
+#  - path_to_monitoring.yml
 services:
+
   kafka:
     image: confluentinc/cp-kafka:7.7.7
     container_name: kafka
@@ -50,7 +53,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db_setups/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./infra/db_setups/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./auth-service/migrations/1_init.up.sql:/docker-entrypoint-initdb.d/init_1.sql
 
 volumes:
