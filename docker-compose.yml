@@ -1,5 +1,6 @@
 #include:
-#  - ./infra/monitoring.yml
+# - ./infra/monitoring.yml
+# - ./auth-service/auth-service.yml
 services:
 
   kafka:

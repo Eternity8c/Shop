@@ -1,0 +1,12 @@
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/.env:/etc/auth/config/.env
+    environment:
+      - CONFIG_PATH=/etc/auth/config/.env    

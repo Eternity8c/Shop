@@ -1,2 +1,3 @@
 config/.env.local
+config/.env.docker
 .vscode
