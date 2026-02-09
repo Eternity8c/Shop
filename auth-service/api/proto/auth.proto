@@ -3,7 +3,7 @@ package auth;
 option go_package = "github.com/Eternity8c/shop/auth-service/api/gen/go";
 
 service AuthService {
-    rpc Register(RegisterRequest) returns (RegisterResponce);
+    rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc Login(LoginRequest) returns (LoginResponse);
     rpc isAdmin(isAdminRequest) returns(isAdminResponse);
 }
@@ -14,7 +14,7 @@ message RegisterRequest {
   string full_name = 3;
 }
 
-message RegisterResponce {
+message RegisterResponse {
   int64 user_id = 1;
   bool succes = 2;
 }

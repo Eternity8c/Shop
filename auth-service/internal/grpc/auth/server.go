@@ -50,7 +50,7 @@ func (s *serverAPI) Login(ctx context.Context, req *authproto.LoginRequest) (*au
 
 }
 
-func (s *serverAPI) Register(ctx context.Context, req *authproto.RegisterRequest) (*authproto.RegisterResponce, error) {
+func (s *serverAPI) Register(ctx context.Context, req *authproto.RegisterRequest) (*authproto.RegisterResponse, error) {
 	if err := validateRegister(req); err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (s *serverAPI) Register(ctx context.Context, req *authproto.RegisterRequest
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	return &authproto.RegisterResponce{
+	return &authproto.RegisterResponse{
 		UserId: userID,
 	}, nil
 }

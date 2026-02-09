@@ -1,4 +1,4 @@
-include config/.env
+include configs/.env
 
 .PHONY: gen-proto
 gen-proto:
@@ -8,7 +8,7 @@ gen-proto:
 
 .PHONY: run
 run:
-	CONFIG_PATH=config/.env go run cmd/auth/main.go
+	CONFIG_PATH=configs/.env go run cmd/auth/main.go
 
 .PHONY: migrate
 migrate:

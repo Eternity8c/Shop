@@ -81,7 +81,7 @@ func (x *RegisterRequest) GetFullName() string {
 	return ""
 }
 
-type RegisterResponce struct {
+type RegisterResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Succes        bool                   `protobuf:"varint,2,opt,name=succes,proto3" json:"succes,omitempty"`
@@ -89,20 +89,20 @@ type RegisterResponce struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *RegisterResponce) Reset() {
-	*x = RegisterResponce{}
+func (x *RegisterResponse) Reset() {
+	*x = RegisterResponse{}
 	mi := &file_api_proto_auth_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RegisterResponce) String() string {
+func (x *RegisterResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterResponce) ProtoMessage() {}
+func (*RegisterResponse) ProtoMessage() {}
 
-func (x *RegisterResponce) ProtoReflect() protoreflect.Message {
+func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_auth_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -114,19 +114,19 @@ func (x *RegisterResponce) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterResponce.ProtoReflect.Descriptor instead.
-func (*RegisterResponce) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
+func (*RegisterResponse) Descriptor() ([]byte, []int) {
 	return file_api_proto_auth_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RegisterResponce) GetUserId() int64 {
+func (x *RegisterResponse) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
 	return 0
 }
 
-func (x *RegisterResponce) GetSucces() bool {
+func (x *RegisterResponse) GetSucces() bool {
 	if x != nil {
 		return x.Succes
 	}
@@ -326,7 +326,7 @@ const file_api_proto_auth_proto_rawDesc = "" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1b\n" +
 	"\tfull_name\x18\x03 \x01(\tR\bfullName\"C\n" +
-	"\x10RegisterResponce\x12\x17\n" +
+	"\x10RegisterResponse\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x16\n" +
 	"\x06succes\x18\x02 \x01(\bR\x06succes\"@\n" +
 	"\fLoginRequest\x12\x14\n" +
@@ -339,7 +339,7 @@ const file_api_proto_auth_proto_rawDesc = "" +
 	"\x0fisAdminResponse\x12\x19\n" +
 	"\bis_admin\x18\x01 \x01(\bR\aisAdmin2\xb2\x01\n" +
 	"\vAuthService\x129\n" +
-	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponce\x120\n" +
+	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x120\n" +
 	"\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x126\n" +
 	"\aisAdmin\x12\x14.auth.isAdminRequest\x1a\x15.auth.isAdminResponseB4Z2github.com/Eternity8c/shop/auth-service/api/gen/gob\x06proto3"
 
@@ -358,7 +358,7 @@ func file_api_proto_auth_proto_rawDescGZIP() []byte {
 var file_api_proto_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_proto_auth_proto_goTypes = []any{
 	(*RegisterRequest)(nil),  // 0: auth.RegisterRequest
-	(*RegisterResponce)(nil), // 1: auth.RegisterResponce
+	(*RegisterResponse)(nil), // 1: auth.RegisterResponse
 	(*LoginRequest)(nil),     // 2: auth.LoginRequest
 	(*LoginResponse)(nil),    // 3: auth.LoginResponse
 	(*IsAdminRequest)(nil),   // 4: auth.isAdminRequest
@@ -368,7 +368,7 @@ var file_api_proto_auth_proto_depIdxs = []int32{
 	0, // 0: auth.AuthService.Register:input_type -> auth.RegisterRequest
 	2, // 1: auth.AuthService.Login:input_type -> auth.LoginRequest
 	4, // 2: auth.AuthService.isAdmin:input_type -> auth.isAdminRequest
-	1, // 3: auth.AuthService.Register:output_type -> auth.RegisterResponce
+	1, // 3: auth.AuthService.Register:output_type -> auth.RegisterResponse
 	3, // 4: auth.AuthService.Login:output_type -> auth.LoginResponse
 	5, // 5: auth.AuthService.isAdmin:output_type -> auth.isAdminResponse
 	3, // [3:6] is the sub-list for method output_type
