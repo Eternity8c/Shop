@@ -21,10 +21,12 @@ type Auth struct {
 	secret      string
 }
 
+//go:generate go run github.com/vektra/mockery/v2@latest --name=UserSaver
 type UserSaver interface {
 	SaveUser(ctx context.Context, email string, passHash []byte, full_name string) (int64, error)
 }
 
+//go:generate go run github.com/vektra/mockery/v2@latest --name=UserProvider
 type UserProvider interface {
 	User(ctx context.Context, email string) (models.User, error)
 	IsAdmin(ctx context.Context, uid int64) (bool, error)
@@ -32,7 +34,6 @@ type UserProvider interface {
 
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
-	ErrInvalidAppID       = errors.New("invalid app id")
 	ErrUserExists         = errors.New("user already exists")
 	ErrUserNotFound       = errors.New("user not found")
 )
