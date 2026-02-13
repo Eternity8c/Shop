@@ -42,7 +42,11 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	container = c
-	defer container.Terminate(ctx)
+	defer func() {
+		if err := container.Terminate(ctx); err != nil {
+			fmt.Println("failed to terminate container: ", err)
+		}
+	}()
 
 	host, err := container.Host(ctx)
 	if err != nil {
