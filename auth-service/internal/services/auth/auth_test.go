@@ -130,7 +130,7 @@ func TestRegisterNewUser(t *testing.T) {
 			email:      "test1gmail.com",
 			password:   "test",
 			fullName:   "test",
-			errStorage: storage.ErrUserExists,
+			errStorage: auth.ErrUserExists,
 		},
 	}
 
@@ -161,7 +161,7 @@ func TestRegisterNewUser(t *testing.T) {
 
 				id, err := svc.RegisterNewUser(ctx, tc.email, tc.password, tc.fullName)
 				require.Error(t, err)
-				require.ErrorIs(t, err, storage.ErrUserExists)
+				require.ErrorIs(t, err, auth.ErrUserExists)
 				require.EqualValues(t, id, int64(0))
 			} else {
 				usrSaver.On("SaveUser", mock.Anything, tc.email, mock.MatchedBy(func(b []byte) bool { return len(b) > 0 }), tc.fullName).Return(int64(1), nil)
