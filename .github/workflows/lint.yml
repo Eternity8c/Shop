@@ -1,0 +1,29 @@
+name: golangci-lint
+run-name: linter
+on:
+    push:
+        branches:
+          - main
+          - dev
+    pull_request:
+permissions:
+    contents: read
+jobs:
+    golangci:
+        name: lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-go@v6
+              with:
+                go-version: '1.25'
+            - run: go version
+            - run: go mod tidy
+            - name: golangci-lint
+              uses: golangci/golangci-lint-action@v9
+              with:
+                version: v2.6
+                args: -v -D staticcheck -D unused
+
+            
+        
