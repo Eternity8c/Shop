@@ -8,12 +8,14 @@ import (
 	authproto "shop/auth-service/api/gen/go/api/proto"
 	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type AuthHandler struct {
-	auth Auth
-	log  *slog.Logger
+	userAuth UserAuth
+	log      *slog.Logger
 }
 
 type registerReq struct {
@@ -27,16 +29,17 @@ type loginReq struct {
 	Password string `json:"password"`
 }
 
-type Auth interface {
+//go:generate go run github.com/vektra/mockery/v2@latest --name=UserAuth
+type UserAuth interface {
 	Register(ctx context.Context, email, password string, fullName string) (*authproto.RegisterResponse, error)
 	Login(ctx context.Context, email, password string) (*authproto.LoginResponse, error)
 	IsAdmin(ctx context.Context, userID int64) (bool, error)
 }
 
-func NewAuthHandler(a Auth, l *slog.Logger) *AuthHandler {
+func NewAuthHandler(a UserAuth, l *slog.Logger) *AuthHandler {
 	return &AuthHandler{
-		auth: a,
-		log:  l,
+		userAuth: a,
+		log:      l,
 	}
 }
 
@@ -54,8 +57,13 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
 	defer cancel()
 
-	resp, err := h.auth.Register(ctx, rr.Email, rr.Password, rr.FullName)
+	resp, err := h.userAuth.Register(ctx, rr.Email, rr.Password, rr.FullName)
 	if err != nil {
+		if st, ok := status.FromError(err); ok && st.Code() == codes.AlreadyExists {
+			h.log.Error("%s: %w", op, err)
+			http.Error(w, "user already exists", http.StatusConflict)
+			return
+		}
 		h.log.Error("%s: %w", op, err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
@@ -82,16 +90,29 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
 	defer cancel()
 
-	resp, err := h.auth.Login(ctx, lr.Email, lr.Password)
+	resp, err := h.userAuth.Login(ctx, lr.Email, lr.Password)
+	if err != nil {
+		if st, ok := status.FromError(err); ok && st.Code() == codes.InvalidArgument {
+			h.log.Error("%s: %w", op, "invalid argumet")
+			http.Error(w, "invalid email or password", http.StatusBadRequest)
+			return
+		}
+		h.log.Error("%s: %w", op, err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	b, err := protojson.Marshal(resp)
 	if err != nil {
 		h.log.Error("%s: %w", op, err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	b, _ := protojson.Marshal(resp)
-
 	w.Header().Set("Content-Type", "application/json")
-
-	w.Write(b)
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(b)
+	if err != nil {
+		h.log.Error("%s: %w", op, err)
+	}
 }
