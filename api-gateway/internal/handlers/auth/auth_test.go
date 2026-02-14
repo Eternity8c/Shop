@@ -100,7 +100,7 @@ func TestRegister(t *testing.T) {
 			email:    "test@gmail.com",
 			password: "test",
 			fullName: "test",
-			wantCode: 200,
+			wantCode: 201,
 		},
 		{
 			nameCs:   "Dublication Register",

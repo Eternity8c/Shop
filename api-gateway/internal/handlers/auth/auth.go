@@ -73,7 +73,11 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	w.Write(b)
+	w.WriteHeader(http.StatusCreated)
+	_, err = w.Write(b)
+	if err != nil {
+		h.log.Error("%s: %w", op, err)
+	}
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {

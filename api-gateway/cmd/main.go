@@ -18,9 +18,13 @@ func main() {
 
 	client, err := auth.New(context.Background(), logger, addrAuth)
 	if err != nil {
-		logger.Warn("create auth client: %w", err)
+		logger.Warn("create auth client:", "err", err)
 	}
-	defer client.Close()
+	defer func() {
+		if err := client.Close(); err != nil {
+			logger.Warn("client.Close:", "err", err)
+		}
+	}()
 
 	mux := http.NewServeMux()
 	ah := authHandlers.NewAuthHandler(client, logger)
@@ -32,7 +36,7 @@ func main() {
 
 	err = http.ListenAndServe(":"+cfg.APIGatewayPort, mux)
 	if err != nil {
-		logger.Warn("err: ", err)
+		logger.Warn("listen and serve:", "err", err)
 	}
 }
 
