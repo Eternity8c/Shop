@@ -1,6 +1,7 @@
-#include:
-# - ./infra/monitoring.yml
-# - ./auth-service/auth-service.yml
+include:
+ - ./infra/monitoring.yml
+ - ./auth-service/auth-service.yml
+ - ./api-gateway/api-gateway.yml
 services:
 
   kafka:
@@ -56,8 +57,20 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./infra/db_setups/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./auth-service/migrations/1_init.up.sql:/docker-entrypoint-initdb.d/init_1.sql
+    networks:
+      - service-network
 
 volumes:
   redis_data:
   postgres_data:
   kafka_data:
+
+networks:
+  service-network:
+    driver: bridge
+    internal: true
+  openapi-network:
+    driver: bridge
+  monitoring-network:
+    driver: bridge
+

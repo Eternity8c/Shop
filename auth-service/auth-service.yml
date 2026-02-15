@@ -4,9 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: auth-service
-    ports:
-      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
-      - ./config/.env:/etc/auth/config/.env
+      - ./configs/.env:/etc/auth/configs/.env
     environment:
-      - CONFIG_PATH=/etc/auth/config/.env    
+      - CONFIG_PATH=/etc/auth/configs/.env    
+    networks:
+      - service-network
