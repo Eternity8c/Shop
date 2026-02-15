@@ -4,10 +4,13 @@ import (
 	"api-geteway/internal/auth"
 	"api-geteway/internal/config"
 	authHandlers "api-geteway/internal/handlers/auth"
+	MyMetrics "api-geteway/internal/metrics"
 	"context"
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -32,9 +35,18 @@ func main() {
 	mux.HandleFunc("/login", ah.Login)
 	mux.HandleFunc("/register", ah.Register)
 
+	mux.Handle("/metrics", promhttp.Handler())
+
+	handler := MyMetrics.InstrumentHandler(mux)
+
+	srv := &http.Server{
+		Addr:    ":" + cfg.APIGatewayPort,
+		Handler: handler,
+	}
+
 	logger.Info("starting api-gateway", "addr", ":"+cfg.APIGatewayPort)
 
-	err = http.ListenAndServe(":"+cfg.APIGatewayPort, mux)
+	err = srv.ListenAndServe()
 	if err != nil {
 		logger.Warn("listen and serve:", "err", err)
 	}
