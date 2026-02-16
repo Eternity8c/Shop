@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	authproto "shop/auth-service/api/gen/go/api/proto"
 	"time"
+
+	authproto "github.com/Eternity8c/proto-shop/auth-proto/gen/go/api/proto"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

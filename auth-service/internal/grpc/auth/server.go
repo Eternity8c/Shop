@@ -1,10 +1,11 @@
 package authgrpc
 
 import (
-	authproto "auth-service/api/gen/go/api/proto"
 	"auth-service/internal/services/auth"
 	"context"
 	"errors"
+
+	authproto "github.com/Eternity8c/proto-shop/auth-proto/gen/go/api/proto"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

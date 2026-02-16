@@ -3,12 +3,12 @@ module api-geteway
 go 1.25.6
 
 require (
+	github.com/Eternity8c/proto-shop/auth-proto v0.0.3
 	github.com/prometheus/client_golang v1.23.2
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
-	google.golang.org/grpc v1.78.0
+	google.golang.org/grpc v1.79.1
 	google.golang.org/protobuf v1.36.11
-	shop/auth-service v0.0.0-00010101000000-000000000000
 )
 
 replace shop/auth-service => ../auth-service

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	_go "shop/auth-service/api/gen/go/api/proto"
+	_go "github.com/Eternity8c/proto-shop/auth-proto/gen/go/api/proto"
 
 	context "context"
 

@@ -8,8 +8,9 @@ import (
 	"io"
 	"log/slog"
 	"net/http/httptest"
-	authproto "shop/auth-service/api/gen/go/api/proto"
 	"testing"
+
+	authproto "github.com/Eternity8c/proto-shop/auth-proto/gen/go/api/proto"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
