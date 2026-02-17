@@ -49,6 +49,12 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	var rr registerReq
 
+	if r.Method != http.MethodPost {
+		h.log.Error("method not allowed")
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	if err := json.NewDecoder(r.Body).Decode(&rr); err != nil {
 		h.log.Error("%s: %w", op, err)
 		http.Error(w, "invalid JSON", http.StatusBadRequest)
@@ -85,6 +91,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	const op = "Handler.Auth.Login"
 
 	var lr loginReq
+
+	if r.Method != http.MethodPost {
+		h.log.Error("method not allowed")
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
 	if err := json.NewDecoder(r.Body).Decode(&lr); err != nil {
 		h.log.Error("%s: %w", op, err)

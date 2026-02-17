@@ -5,6 +5,7 @@ import (
 	"api-geteway/internal/config"
 	authHandlers "api-geteway/internal/handlers/auth"
 	MyMetrics "api-geteway/internal/metrics"
+	"api-geteway/internal/router"
 	"context"
 	"log/slog"
 	"net/http"
@@ -32,8 +33,9 @@ func main() {
 	mux := http.NewServeMux()
 	ah := authHandlers.NewAuthHandler(client, logger)
 
-	mux.HandleFunc("/login", ah.Login)
-	mux.HandleFunc("/register", ah.Register)
+	router := router.New(ah)
+
+	router.RegisterRoutes(mux)
 
 	mux.Handle("/metrics", promhttp.Handler())
 
