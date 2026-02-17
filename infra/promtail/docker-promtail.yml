@@ -1,0 +1,15 @@
+services:
+  promtail:
+    image: grafana/promtail:2.8.2
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
+      - //var/run/docker.sock:/var/run/docker.sock
+    command:
+      - '-config.file=/etc/promtail/promtail-config.yaml'
+    depends_on:
+      - loki:
+        condition: service_started
+    networks:
+      - monitoring-network

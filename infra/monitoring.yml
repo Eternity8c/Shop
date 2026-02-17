@@ -1,3 +1,5 @@
 include:
   - ./Prometheus/docker-prometheus.yml
   - ./Grafana/docker-grafana.yml
+  - ./Loki/docker-loki.yml
+  - ./promtail/docker-promtail.yml
