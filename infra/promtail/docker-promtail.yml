@@ -9,7 +9,7 @@ services:
     command:
       - '-config.file=/etc/promtail/promtail-config.yaml'
     depends_on:
-      - loki:
+      loki:
         condition: service_started
     networks:
       - monitoring-network
