@@ -2,6 +2,7 @@ include:
  - ./infra/monitoring.yml
  - ./auth-service/auth-service.yml
  - ./api-gateway/api-gateway.yml
+ - ./k6/k6.yml
 services:
 
   kafka:
