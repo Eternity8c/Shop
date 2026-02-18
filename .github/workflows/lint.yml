@@ -3,6 +3,7 @@ run-name: linter
 on:
     push:
         branches:
+          - test
           - main
           - dev
     pull_request:

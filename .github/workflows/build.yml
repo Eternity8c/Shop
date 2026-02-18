@@ -2,10 +2,11 @@ name: golang-build
 run-name: build 
 on:
     workflow_run:
-      workflows: ["golangci-lint"]
+      workflows: ["Load Test"]
       types: [completed]
     push:
         branches:
+          - test
           - main
           - dev
     pull_request:

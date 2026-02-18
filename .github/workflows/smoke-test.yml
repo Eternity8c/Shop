@@ -1,0 +1,62 @@
+name: Load Test
+run-name: smoke test
+
+on:
+  workflow_run:
+    workflows: ["golang-tests"]
+    types: [completed]
+  push:
+    branches:
+      - test
+      - main
+      - dev
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  k6-smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Start services
+        run: |
+          docker compose up -d postgres redis auth-service api-service
+          echo "Waiting for services to be ready..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8080/register \
+              -H "Content-Type: application/json" \
+              -d '{"email":"healthcheck@example.com","password":"hc","full_name":"hc"}' || echo "000")
+            echo "Attempt $i: status=$STATUS"
+            if [ "$STATUS" = "201" ] || [ "$STATUS" = "409" ]; then
+              echo "Service ready after $i attempts"
+              break
+            fi
+            sleep 5
+          done
+
+      - name: Check services health
+        run: |
+          docker compose ps
+          curl -f http://localhost:8080/ || echo "API Gateway might not have a root endpoint"
+
+      - name: Run K6 Smoke Test
+        run: |
+          docker compose --profile smoke-test up --abort-on-container-exit k6-smoke
+
+      - name: Show Results
+        if: always()
+        run: |
+          docker compose logs k6-smoke
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose down -v
+          docker compose --profile smoke-test down -v

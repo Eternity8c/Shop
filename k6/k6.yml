@@ -1,0 +1,81 @@
+services:
+  k6:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: k6-load-test
+    depends_on:
+      - api-service
+    environment:
+      - BASE_URL=http://api-service:8080
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    networks:
+      - service-network
+      - monitoring-network
+    profiles:
+      - load-test
+    command: run --out experimental-prometheus-rw /scripts/auth-load-test.js
+
+  k6-smoke:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: k6-smoke-test
+    depends_on:
+      - api-service
+    environment:
+      - BASE_URL=http://api-service:8080
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    networks:
+      - service-network
+    profiles:
+      - smoke-test
+    command: run /scripts/ci-test.js
+
+  k6-stress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: k6-stress-test
+    depends_on:
+      - api-service
+    environment:
+      - BASE_URL=http://api-service:8080
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    networks:
+      - service-network
+      - monitoring-network
+    profiles:
+      - stress-test
+    command: run --out experimental-prometheus-rw /scripts/stress-test.js
+
+  k6-spike:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: k6-spike-test
+    depends_on:
+      - api-service
+    environment:
+      - BASE_URL=http://api-service:8080
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    networks:
+      - service-network
+      - monitoring-network
+    profiles:
+      - spike-test
+    command: run --out experimental-prometheus-rw /scripts/spike-test.js

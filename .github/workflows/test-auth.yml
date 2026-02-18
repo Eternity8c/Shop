@@ -3,6 +3,7 @@ run-name: tests
 on:
     push:
         branches:
+          - test
           - main
           - dev
     pull_request:
