@@ -1,0 +1,10 @@
+\c product;
+
+CREATE TABLE IF NOT EXISTS product(
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL UNIQUE,
+    price DECIMAL NOT NULL,
+    stock INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

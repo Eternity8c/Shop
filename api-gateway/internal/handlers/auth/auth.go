@@ -3,6 +3,7 @@ package authHandlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 	"time"
@@ -30,6 +31,10 @@ type loginReq struct {
 	Password string `json:"password"`
 }
 
+var (
+	ErrMethodNotAllowed = errors.New("method not allowed")
+)
+
 //go:generate go run github.com/vektra/mockery/v2@latest --name=UserAuth
 type UserAuth interface {
 	Register(ctx context.Context, email, password string, fullName string) (*authproto.RegisterResponse, error)
@@ -50,8 +55,8 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var rr registerReq
 
 	if r.Method != http.MethodPost {
-		h.log.Error("method not allowed")
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		h.log.Error("%s: %w", op, ErrMethodNotAllowed)
+		http.Error(w, ErrMethodNotAllowed.Error(), http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -93,8 +98,8 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var lr loginReq
 
 	if r.Method != http.MethodPost {
-		h.log.Error("method not allowed")
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		h.log.Error("%s: %w", op, ErrMethodNotAllowed)
+		http.Error(w, ErrMethodNotAllowed.Error(), http.StatusMethodNotAllowed)
 		return
 	}
 

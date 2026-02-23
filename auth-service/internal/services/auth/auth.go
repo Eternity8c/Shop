@@ -86,6 +86,13 @@ func (a *Auth) Login(
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
 
+	isAdmin, err := a.usrProvider.IsAdmin(ctx, user.ID)
+	if err != nil {
+		a.log.Warn("failed to check is_admin, defaulting to false", "error", err)
+		isAdmin = false
+	}
+	user.IsAdmin = isAdmin
+
 	a.log.Info("user logged is successfully")
 
 	token, err := jwt.NewToken(user, a.tokenTTL, a.secret)

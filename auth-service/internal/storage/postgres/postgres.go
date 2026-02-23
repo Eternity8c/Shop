@@ -25,7 +25,7 @@ func New(ctx context.Context, storagePath string) (*Storage, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	if err := pool.Ping(ctx); err != nil {
+	if err = pool.Ping(ctx); err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 

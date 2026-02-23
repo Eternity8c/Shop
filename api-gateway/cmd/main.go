@@ -1,9 +1,11 @@
 package main
 
 import (
-	"api-geteway/internal/auth"
+	"api-geteway/internal/client/auth"
+	"api-geteway/internal/client/product"
 	"api-geteway/internal/config"
 	authHandlers "api-geteway/internal/handlers/auth"
+	productHandler "api-geteway/internal/handlers/product"
 	MyMetrics "api-geteway/internal/metrics"
 	"api-geteway/internal/router"
 	"context"
@@ -30,10 +32,14 @@ func main() {
 		}
 	}()
 
-	mux := http.NewServeMux()
-	ah := authHandlers.NewAuthHandler(client, logger)
+	productClient := product.New(cfg.ProductServiceAddr, logger)
 
-	router := router.New(ah)
+	mux := http.NewServeMux()
+
+	ah := authHandlers.NewAuthHandler(client, logger)
+	ph := productHandler.New(productClient, logger)
+
+	router := router.New(ah, ph)
 
 	router.RegisterRoutes(mux)
 

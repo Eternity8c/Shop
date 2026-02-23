@@ -5,4 +5,5 @@ type User struct {
 	Email    string
 	PassHash []byte
 	FullName string `db:"full_name"`
+	IsAdmin  bool
 }

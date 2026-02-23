@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	APIGatewayPort   string
-	AuthServicesAddr string
+	APIGatewayPort     string
+	AuthServicesAddr   string
+	ProductServiceAddr string
 }
 
 func MustLoad() *Config {
@@ -19,7 +20,8 @@ func MustLoad() *Config {
 	}
 
 	return &Config{
-		APIGatewayPort:   viper.GetString("GATEWAY_PORT"),
-		AuthServicesAddr: viper.GetString("AUTH_SERVICES_ADDR"),
+		APIGatewayPort:     viper.GetString("GATEWAY_PORT"),
+		AuthServicesAddr:   viper.GetString("AUTH_SERVICES_ADDR"),
+		ProductServiceAddr: viper.GetString("PRODUCT_SERVICE_ADDR"),
 	}
 }
