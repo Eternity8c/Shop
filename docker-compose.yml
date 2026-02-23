@@ -3,6 +3,7 @@ include:
  - ./auth-service/auth-service.yml
  - ./api-gateway/api-gateway.yml
  - ./k6/k6.yml
+ - ./product-service/product-service.yml
 services:
 
   kafka:

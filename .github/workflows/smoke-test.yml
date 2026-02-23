@@ -7,9 +7,7 @@ on:
     types: [completed]
   push:
     branches:
-      - test
       - main
-      - dev
   pull_request:
   workflow_dispatch:
 
