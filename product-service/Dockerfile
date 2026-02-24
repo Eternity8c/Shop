@@ -12,5 +12,5 @@ RUN go build -o product ./cmd
 FROM alpine:3.23.3
 WORKDIR /app
 COPY --from=builder /app /app
-EXPOSE 8080
+EXPOSE 8081
 ENTRYPOINT [ "/app/product" ]
