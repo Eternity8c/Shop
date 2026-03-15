@@ -29,7 +29,7 @@ func main() {
 	r.RegisterRoutes(mux)
 
 	srv := http.Server{
-		Addr:    "localhost:" + cfg.Port,
+		Addr:    ":" + cfg.Port,
 		Handler: mux,
 	}
 

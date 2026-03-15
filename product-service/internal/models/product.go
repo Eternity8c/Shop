@@ -8,5 +8,5 @@ type Product struct {
 	Description string
 	Price       int64
 	Stock       int64
-	Created_at  time.Duration
+	CreatedAt   time.Time `db:"created_at"`
 }

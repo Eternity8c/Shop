@@ -124,8 +124,14 @@ func (h *Handler) CreatedProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err = json.NewEncoder(w).Encode(id); err != nil {
+	w.WriteHeader(http.StatusCreated)
+
+	response := map[string]interface{}{
+		"id":      id,
+		"message": "Product created successfully",
+	}
+
+	if err = json.NewEncoder(w).Encode(response); err != nil {
 		h.log.Error("%s: %w", op, err)
 		return
 	}

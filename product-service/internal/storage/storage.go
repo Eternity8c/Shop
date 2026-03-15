@@ -41,7 +41,7 @@ func (s *Storage) ProductByName(ctx context.Context, name string) (models.Produc
 
 	stmt := `
 	SELECT id, name, description, price, stock, created_at 
-	FROM product
+	FROM products
 	WHERE name = $1
 	`
 
@@ -54,7 +54,7 @@ func (s *Storage) ProductByName(ctx context.Context, name string) (models.Produc
 			&product.Description,
 			&product.Price,
 			&product.Stock,
-			&product.Created_at,
+			&product.CreatedAt,
 		)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -72,7 +72,7 @@ func (s *Storage) AllProducts(ctx context.Context) ([]models.Product, error) {
 
 	stmt := `
 	SELECT id, name, description, price, stock, created_at 
-	FROM product
+	FROM products
 	`
 
 	rows, err := s.pool.Query(ctx, stmt)
@@ -92,7 +92,7 @@ func (s *Storage) AllProducts(ctx context.Context) ([]models.Product, error) {
 			&product.Description,
 			&product.Price,
 			&product.Stock,
-			&product.Created_at,
+			&product.CreatedAt,
 		)
 
 		if err != nil {
@@ -113,7 +113,7 @@ func (s *Storage) CreatedProduct(ctx context.Context, dto dto.Product) (int64, e
 	const op = "Storage.CreatedProduct"
 
 	stmt := `
-	INSERT INTO product (name, description, price, stock)
+	INSERT INTO products (name, description, price, stock)
 	VALUES ($1, $2, $3, $4)
 	RETURNING id
 	`
