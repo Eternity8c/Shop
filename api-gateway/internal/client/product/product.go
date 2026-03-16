@@ -44,7 +44,7 @@ func New(addr string, log *slog.Logger) *Client {
 func (c *Client) AllProducts(ctx context.Context) ([]Product, error) {
 	const op = "Product.AllProducts"
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/Product", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/Products", nil)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}

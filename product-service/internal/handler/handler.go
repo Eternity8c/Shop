@@ -9,6 +9,7 @@ import (
 	"product-service/internal/dto"
 	"product-service/internal/models"
 	"product-service/internal/storage"
+	"strconv"
 	"time"
 )
 
@@ -21,6 +22,7 @@ type ProductService interface {
 	GetAllProducts(ctx context.Context) ([]models.Product, error)
 	GetProductByName(ctx context.Context, name string) (models.Product, error)
 	CreatedProduct(ctx context.Context, dto dto.Product) (int64, error)
+	GetProductByID(ctx context.Context, id int) (models.Product, error)
 }
 
 var (
@@ -76,6 +78,50 @@ func (h *Handler) ProductByName(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 
 	products, err := h.productService.GetProductByName(ctx, name)
+	if err != nil {
+		if errors.Is(err, storage.ErrProductNotFound) {
+			h.log.Info("%s: %w", op, storage.ErrProductNotFound)
+			http.Error(w, "product not found", http.StatusNotFound)
+			return
+		}
+		h.log.Error("%s: %w", op, err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err = json.NewEncoder(w).Encode(products); err != nil {
+		h.log.Error("%s: %w", op, err)
+		return
+	}
+}
+
+func (h *Handler) ProductByID(w http.ResponseWriter, r *http.Request) {
+	const op = "Handler.ProductByID"
+
+	if r.Method != http.MethodGet {
+		h.log.Error("%s: %w", op, ErrMethodNotAllowed)
+		http.Error(w, ErrMethodNotAllowed.Error(), http.StatusMethodNotAllowed)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	idStr := r.PathValue("ID")
+	if idStr == "" {
+		http.Error(w, "product ID is required", http.StatusBadRequest)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.log.Error("%s: %w", op, err)
+		http.Error(w, "invalid id", http.StatusInternalServerError)
+		return
+	}
+
+	products, err := h.productService.GetProductByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, storage.ErrProductNotFound) {
 			h.log.Info("%s: %w", op, storage.ErrProductNotFound)

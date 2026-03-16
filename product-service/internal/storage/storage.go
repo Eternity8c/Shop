@@ -67,6 +67,37 @@ func (s *Storage) ProductByName(ctx context.Context, name string) (models.Produc
 	return product, nil
 }
 
+func (s *Storage) ProductByID(ctx context.Context, id int) (models.Product, error) {
+	const op = "Storage.ProductByID"
+
+	stmt := `
+	SELECT id, name, description, price, stock, created_at 
+	FROM products
+	WHERE id = $1
+	`
+
+	var product models.Product
+
+	err := s.pool.QueryRow(ctx, stmt, id).
+		Scan(
+			&product.ID,
+			&product.Name,
+			&product.Description,
+			&product.Price,
+			&product.Stock,
+			&product.CreatedAt,
+		)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return models.Product{}, fmt.Errorf("%s: %w", op, ErrProductNotFound)
+		}
+
+		return models.Product{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return product, nil
+}
+
 func (s *Storage) AllProducts(ctx context.Context) ([]models.Product, error) {
 	const op = "Storage.AllProducts"
 

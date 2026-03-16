@@ -19,7 +19,7 @@ func main() {
 
 	store, err := storage.New(ctx, cfg.StoragePath)
 	if err != nil {
-		logger.Warn("failed to connect db", err)
+		logger.Warn("failed to connect db", "error", err)
 	}
 	svc := service.New(logger, store)
 	h := handler.New(ctx, logger, svc)
@@ -36,7 +36,7 @@ func main() {
 	logger.Info("server is starting", "Port:", cfg.Port)
 
 	if err := srv.ListenAndServe(); err != nil {
-		logger.Warn("err", err)
+		logger.Warn("Error server", "error", err)
 	}
 }
 

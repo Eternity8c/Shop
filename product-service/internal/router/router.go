@@ -16,7 +16,8 @@ func New(h *handler.Handler) *Router {
 }
 
 func (r *Router) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /Product", r.handler.AllProducts)
+	mux.HandleFunc("GET /Products", r.handler.AllProducts)
 	mux.HandleFunc("GET /Product/search", r.handler.ProductByName)
+	mux.HandleFunc("GET /Product/{ID}", r.handler.ProductByID)
 	mux.HandleFunc("POST /created", r.handler.CreatedProduct)
 }

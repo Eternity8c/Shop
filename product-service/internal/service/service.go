@@ -19,6 +19,7 @@ type ProductStorage interface {
 	CreatedProduct(ctx context.Context, dto dto.Product) (int64, error)
 	AllProducts(ctx context.Context) ([]models.Product, error)
 	ProductByName(ctx context.Context, name string) (models.Product, error)
+	ProductByID(ctx context.Context, id int) (models.Product, error)
 }
 
 var (
@@ -43,6 +44,25 @@ func (s *Service) GetAllProducts(ctx context.Context) ([]models.Product, error) 
 	}
 
 	return products, nil
+}
+
+func (s *Service) GetProductByID(ctx context.Context, id int) (models.Product, error) {
+	const op = "Service.GetProductByID"
+
+	if err := validatorID(id); err != nil {
+		s.log.Error("%s: %w", op, err)
+		return models.Product{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	product, err := s.productStor.ProductByID(ctx, id)
+	if err != nil {
+		if errors.Is(err, storage.ErrProductNotFound) {
+			return models.Product{}, fmt.Errorf("%s: %w", op, ErrProductNotFound)
+		}
+		return models.Product{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return product, nil
 }
 
 func (s *Service) GetProductByName(ctx context.Context, name string) (models.Product, error) {
@@ -84,6 +104,13 @@ func (s *Service) CreatedProduct(ctx context.Context, dto dto.Product) (int64, e
 func validatorName(name string) error {
 	if name == "" {
 		return fmt.Errorf("name is empty")
+	}
+	return nil
+}
+
+func validatorID(id int) error {
+	if id == 0 {
+		return fmt.Errorf("id is empty")
 	}
 	return nil
 }
