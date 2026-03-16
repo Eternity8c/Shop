@@ -1,0 +1,26 @@
+name: golang-build
+run-name: build 
+on:
+    workflow_run:
+      workflows: ["Load Test"]
+      types: [completed]
+    push:
+        branches:
+          - main
+    pull_request:
+permissions:
+    contents: read
+jobs:
+    tests-auth:
+      name: Run auth build
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v6
+        - uses: actions/setup-go@v6
+          with:
+            go-version: '1.25.6'
+        - name: build auth
+          working-directory: ./auth-service
+          env:
+            CONFIG_PATH: ./configs/.env
+          run: go build -o auth-service ./cmd/auth/main.go

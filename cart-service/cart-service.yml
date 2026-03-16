@@ -1,0 +1,19 @@
+services:
+  cart-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cart-service
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    expose:
+      - "8082"
+    volumes:
+      - ./configs/.env:/etc/cart/configs/.env
+    environment:
+      - CONFIG_PATH=/etc/cart/configs/.env    
+    networks:
+      - service-network

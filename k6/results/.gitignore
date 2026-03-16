@@ -1,0 +1,7 @@
+# K6 Results Directory
+*.csv
+*.json
+*.html
+
+# K6 runtime files
+k6-*.log

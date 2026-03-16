@@ -1,0 +1,19 @@
+services:
+  product-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: product-service
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    expose:
+      - "8081"
+    volumes:
+      - ./configs/.env:/etc/product/configs/.env
+    environment:
+      - CONFIG_PATH=/etc/product/configs/.env    
+    networks:
+      - service-network

@@ -1,0 +1,44 @@
+name: golangci-lint
+run-name: linter
+on:
+    push:
+        branches:
+          - main
+          - dev
+    pull_request:
+permissions:
+    contents: read
+jobs:
+    lint-auth:
+        name: lint-auth
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-go@v6
+              with:
+                go-version: '1.25'
+            - run: cd ./auth-service && go mod tidy
+            - name: golangci-lint
+              uses: golangci/golangci-lint-action@v9
+              with:
+                version: v2.6
+                args: -v -D staticcheck -D unused
+                working-directory: ./auth-service
+    lint-api:
+        name: lint-api
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-go@v6
+              with:
+                go-version: '1.25'
+            - run: cd ./api-gateway && go mod tidy
+            - name: golangci-lint
+              uses: golangci/golangci-lint-action@v9
+              with:
+                version: v2.6
+                args: -v -D staticcheck -D unused
+                working-directory: ./api-gateway
+
+            
+        

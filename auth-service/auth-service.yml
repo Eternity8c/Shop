@@ -1,0 +1,15 @@
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./configs/.env:/etc/auth/configs/.env
+    environment:
+      - CONFIG_PATH=/etc/auth/configs/.env    
+    networks:
+      - service-network

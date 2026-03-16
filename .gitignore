@@ -1,0 +1,12 @@
+auth-service/config/.env.local
+auth-service/config/.env.docker
+auth-service/.vscode
+
+
+.vscode
+
+
+api-gateway/config/.env.local
+api-gateway/config/.env.docker
+api-gateway/.vscode
+api-gateway/vendor

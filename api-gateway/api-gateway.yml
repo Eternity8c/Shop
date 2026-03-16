@@ -1,0 +1,21 @@
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-service
+    depends_on:
+      auth-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./configs/.env:/etc/api/config/.env
+    environment:
+      - CONFIG_PATH=/etc/api/config/.env    
+    networks:
+      - service-network
+      - openapi-network
+      - monitoring-network

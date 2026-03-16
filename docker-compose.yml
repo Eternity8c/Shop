@@ -1,4 +1,12 @@
+include:
+ - ./infra/monitoring.yml
+ - ./auth-service/auth-service.yml
+ - ./api-gateway/api-gateway.yml
+ - ./k6/k6.yml
+ - ./product-service/product-service.yml
+ - ./cart-service/cart-service.yml
 services:
+
   kafka:
     image: confluentinc/cp-kafka:7.7.7
     container_name: kafka
@@ -33,6 +41,8 @@ services:
       retries: 5
     volumes:
       - redis_data:/data
+    networks:
+      - service-network
 
   postgres:
     image: postgres:16-alpine3.23
@@ -50,9 +60,23 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db_setups/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./infra/db_setups/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./auth-service/migrations/1_init.up.sql:/docker-entrypoint-initdb.d/init_1.sql
+      - ./product-service/migrations/1_init.up.sql:/docker-entrypoint-initdb.d/init_2.sql
+    networks:
+      - service-network
 
 volumes:
   redis_data:
   postgres_data:
   kafka_data:
+
+networks:
+  service-network:
+    driver: bridge
+    internal: true
+  openapi-network:
+    driver: bridge
+  monitoring-network:
+    driver: bridge
+
