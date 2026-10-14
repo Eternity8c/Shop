@@ -1,6 +1,3 @@
-# Конфиги со значениями — в git НИКОГДА.
-# В репозитории живёт только configs/.env.example.
-# (Раньше правила указывали на каталог config/, которого в проекте нет, — отсюда и попал .env.)
 **/configs/.env
 **/configs/.env.local
 **/configs/.env.docker
