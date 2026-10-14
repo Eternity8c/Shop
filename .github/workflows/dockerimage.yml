@@ -2,7 +2,7 @@ permissions:
   contents: read
   packages: write
 env:
-  DOCKER_IMAGE_NAME: shop
+  DOCKER_IMAGE_NAME: eternity8c/shop
   DOCKER_REGISTRY: ghcr.io
 
 name: Build and Push Docker Image
