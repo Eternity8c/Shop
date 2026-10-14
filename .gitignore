@@ -1,12 +1,10 @@
-auth-service/config/.env.local
-auth-service/config/.env.docker
-auth-service/.vscode
+# Конфиги со значениями — в git НИКОГДА.
+# В репозитории живёт только configs/.env.example.
+# (Раньше правила указывали на каталог config/, которого в проекте нет, — отсюда и попал .env.)
+**/configs/.env
+**/configs/.env.local
+**/configs/.env.docker
 
-
-.vscode
-
-
-api-gateway/config/.env.local
-api-gateway/config/.env.docker
-api-gateway/.vscode
-api-gateway/vendor
+.vscode/
+**/.vscode/
+**/vendor/
