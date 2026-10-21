@@ -37,11 +37,12 @@ func main() {
 		Handler: mux,
 	}
 
+	logger.Info("service is start", "Port:", cfg.Port)
+
 	if err := srv.ListenAndServe(); err != nil {
 		logger.Error("listen and serve:", "err", err)
 	}
 
-	logger.Info("service is start", "Port:", cfg.Port)
 }
 
 func setupLogger() *slog.Logger {
