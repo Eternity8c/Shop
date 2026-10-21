@@ -17,12 +17,19 @@ type CartHandler struct {
 }
 
 type CartService interface {
-	Add(ctx context.Context, userID string, productID int, quantity int) (bool, error)
+	Add(ctx context.Context, userID string, productID int) (bool, error)
 }
 
 var (
 	ErrMethodNotAllowed = errors.New("method not allowed")
 )
+
+func NewCartHandler(l *slog.Logger, s CartService) *CartHandler {
+	return &CartHandler{
+		log:     l,
+		service: s,
+	}
+}
 
 func (h *CartHandler) AddToCart(w http.ResponseWriter, r *http.Request) {
 	const op = "Handler.Cart.AddToCart"

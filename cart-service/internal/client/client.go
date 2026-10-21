@@ -34,7 +34,7 @@ func New(addr string, log *slog.Logger) *Client {
 	}
 }
 
-func (c *Client) GetProductByID(ctx context.Context, id int) (Product, error) {
+func (c *Client) GetById(ctx context.Context, id int) (Product, error) {
 	const op = "Client.GetProductByID"
 
 	idStr := strconv.Itoa(id)

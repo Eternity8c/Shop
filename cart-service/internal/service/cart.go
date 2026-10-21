@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-type Cart struct {
+type CartService struct {
 	log     *slog.Logger
 	storage CartStorage
 	client  ProductClient
@@ -23,7 +23,15 @@ type ProductClient interface {
 	GetById(ctx context.Context, id int) (client.Product, error)
 }
 
-func (c *Cart) Add(ctx context.Context, userID string, productID int) (bool, error) {
+func NewCartService(l *slog.Logger, s CartStorage, c ProductClient) *CartService {
+	return &CartService{
+		log:     l,
+		storage: s,
+		client:  c,
+	}
+}
+
+func (c *CartService) Add(ctx context.Context, userID string, productID int, quantity int) (bool, error) {
 	const op = "Cart.Add"
 
 	product, err := c.client.GetById(ctx, productID)
@@ -39,7 +47,7 @@ func (c *Cart) Add(ctx context.Context, userID string, productID int) (bool, err
 		ProductID: strconv.Itoa(productID),
 		Name:      product.Name,
 		Price:     float64(product.Price),
-		Quantity:  1,
+		Quantity:  quantity,
 	}
 
 	if err := c.storage.AddItem(ctx, userID, cartItem); err != nil {
