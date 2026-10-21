@@ -17,7 +17,7 @@ type CartHandler struct {
 }
 
 type CartService interface {
-	Add(ctx context.Context, userID string, productID int) (bool, error)
+	Add(ctx context.Context, userID string, productID int, quantity int) (bool, error)
 }
 
 var (
