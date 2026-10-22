@@ -26,11 +26,11 @@ jobs:
         run: |
           set -euo pipefail
           for svc in $SERVICES; do
-               tok=$(curl -fsS "https://$REGISTRY/token?scope=repository:$IMAGE-$svc:pull&service=$REGISTRY" | jq -r .token)
+               tok=$(curl -fsS "https://$DOCKER_REGISTRY/token?scope=repository:$IMAGE-$svc:pull&service=$DOCKER_REGISTRY" | jq -r .token)
                code=$(curl -s -o /dev/null -w '%{http_code}' \
                  -H "Authorization: Bearer $tok" \
                  -H 'Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.manifest.v1+json' \
-                 "https://$REGISTRY/v2/$IMAGE-$svc/manifests/$SHA")
+                 "https://$DOCKER_REGISTRY/v2/$IMAGE-$svc/manifests/$SHA")
                echo "$IMAGE-$svc:$SHA -> $code"
                [ "$code" = "200" ] || { echo "::error::image $svc:$SHA not found in GHCR"; exit 1; }
              done

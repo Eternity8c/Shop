@@ -4,10 +4,6 @@ on:
     workflow_run:
       workflows: ["Load Test"]
       types: [completed]
-    push:
-        branches:
-          - main
-    pull_request:
 permissions:
     contents: read
 jobs:
