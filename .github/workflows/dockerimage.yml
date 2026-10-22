@@ -11,9 +11,21 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_run:
+    workflows: ["Load Test"]
+    types: [completed]
+
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_brunch == 'main')
+    steps:
+      - run: echo "passed ${{ github.event.name }}"
   build-and-push-api-gateway:
+    needs: check
     env:
       DOCKER_SERVICE_NAME: api-gateway
     name: Build and Push api-gateway
@@ -42,6 +54,7 @@ jobs:
           cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_SERVICE_NAME }}:buildcache,mode=max
 
   build-and-push-auth-service:
+    needs: check
     env:
       DOCKER_SERVICE_NAME: auth-service
     name: Build and Push auth-service
@@ -70,6 +83,7 @@ jobs:
           cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_SERVICE_NAME }}:buildcache,mode=max
 
   build-and-push-cart-service:
+    needs: check
     env:
       DOCKER_SERVICE_NAME: cart-service
     name: Build and Push cart-service
@@ -99,6 +113,7 @@ jobs:
           cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}-${{ env.DOCKER_SERVICE_NAME }}:buildcache,mode=max
 
   build-and-push-product-service:
+    needs: check
     name: Build and Push product-service
     runs-on: ubuntu-latest
     env:
