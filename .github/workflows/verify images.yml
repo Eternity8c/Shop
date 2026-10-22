@@ -8,9 +8,9 @@ on:
   
 permissions:
   contents: read
-env: 
-  DOCKER_IMAGE_NAME: eternity8c/shop
+env:
   DOCKER_REGISTRY: ghcr.io
+  DOCKER_IMAGE_NAME: eternity8c/shop
   SERVICES: api-gateway auth-service cart-service product-service
 
 jobs:
@@ -23,5 +23,15 @@ jobs:
       - name: Verify GHCR image
         env:
          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-        run: env | grep -E '^(SHA|SERVICES|REGISTRY|IMAGE)=' | sort
+        run: |
+          set -euo pipefail
+          for svc in $SERVICES; do
+                tok=$(curl -fsS "https://$DOCKER_REGISTRY/token?scope=repository:$DOCKER_IMAGE_NAME-$svc:pull&service=$DOCKER_REGISTRY" | jq -r .token)
+                code=$(curl -s -o /dev/null -w '%{http_code}' \
+                  -H "Authorization: Bearer $tok" \
+                  -H 'Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.manifest.v1+json' \
+                  "https://$DOCKER_REGISTRY/v2/$IMAGE-$svc/manifests/$SHA")
+                echo "$DOCKER_IMAGE_NAME-$svc:$SHA -> $code"
+                [ "$code" = "200" ] || { echo "::error::image $svc:$SHA not found in GHCR"; exit 1; }
+              done
 
