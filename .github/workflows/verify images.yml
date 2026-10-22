@@ -1,5 +1,5 @@
 name: verify images
-run-name: verify ${{ github.event.workflow_run.head.sha }}
+run-name: verify ${{ github.event.workflow_run.head_sha }}
 
 on:
   workflow_run:
@@ -15,9 +15,7 @@ env:
 
 jobs:
   verify:
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Verify GHCR image
@@ -30,7 +28,7 @@ jobs:
                 code=$(curl -s -o /dev/null -w '%{http_code}' \
                   -H "Authorization: Bearer $tok" \
                   -H 'Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.manifest.v1+json' \
-                  "https://$DOCKER_REGISTRY/v2/$IMAGE-$svc/manifests/$SHA")
+                  "https://$DOCKER_REGISTRY/v2/$DOCKER_IMAGE_NAME-$svc/manifests/$SHA")
                 echo "$DOCKER_IMAGE_NAME-$svc:$SHA -> $code"
                 [ "$code" = "200" ] || { echo "::error::image $svc:$SHA not found in GHCR"; exit 1; }
               done
