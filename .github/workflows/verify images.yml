@@ -24,7 +24,7 @@ jobs:
         env:
           SHA: ${{ github.event.workflow_run.head.sha}}
         run: |
-          set -eu
+          set -euo pipefail
           for svc in $SERVICES; do
                tok=$(curl -fsS "https://$REGISTRY/token?scope=repository:$IMAGE-$svc:pull&service=$REGISTRY" | jq -r .token)
                code=$(curl -s -o /dev/null -w '%{http_code}' \
