@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Verify GHCR image
         env:
-          SHA: ${{ github.event.workflow_run.head.sha}}
+         SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           set -euo pipefail
           for svc in $SERVICES; do
