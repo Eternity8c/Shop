@@ -3,7 +3,7 @@ run-name: smoke test
 
 on:
   workflow_run:
-    workflows: ["golang-tests"]
+    workflows: ["lint and test"]
     types: [completed]
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name:  .env pass
         run: |
           set -euo pipefail
