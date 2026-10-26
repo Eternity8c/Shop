@@ -87,9 +87,8 @@ jobs:
                 [ "$code" = "200" ] || { echo "::error::image $svc:$SHA not found in GHCR"; exit 1; }
               done
   bump-tag:
-    needs:
-      - verify
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout shop-infra
