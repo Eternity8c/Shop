@@ -88,9 +88,12 @@ jobs:
               done
   bump-tag:
     needs: [verify]
+    env:
+          SHA: ${{ github.sha }}
     if: github.event_name == 'push' && github.ref == 'refs/heads/test_ci'
     runs-on: ubuntu-latest
     steps:
+      
       - name: Checkout shop-infra
         uses: actions/checkout@v4
         with:
@@ -110,6 +113,7 @@ jobs:
           done
           git --no-pager diff --stat
       - name: Commit and push
+      
         run: |
             set -euo pipefail
             git config user.name  "ci"
