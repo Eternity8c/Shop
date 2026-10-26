@@ -4,7 +4,6 @@ permissions:
 env:
   DOCKER_IMAGE_NAME: eternity8c/shop
   DOCKER_REGISTRY: ghcr.io
-
 name: Build and Push Docker Image
 on:
   workflow_dispatch:
@@ -15,38 +14,33 @@ on:
     tags: ['v*']
 jobs:
   inventory:
-       runs-on: ubuntu-latest
-       outputs:
-         services: ${{ steps.emit.outputs.services }}
-       steps:
-         - id: emit
-           run: |
-            set -u
-            svc='{"service":["api-gateway","auth-service","cart-service","product-service"]}'
-            echo "$svc" | jq -e '(.service | length) > 0' >/dev/null \
-              || { echo "::error::empty inventory"; exit 1; }
-            echo "services=$svc" >> "$GITHUB_OUTPUT"
-          
-         - name: Validate version tag
-           if: startsWith(github.ref, 'refs/tags/')
-           run: |
-              [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
-                || { echo "::error::$GITHUB_REF_NAME != semver"; exit 1; }
-
-
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.emit.outputs.services }}
+    steps:
+      - id: emit
+        run: |
+          set -u
+          svc='{"service":["api-gateway","auth-service","cart-service","product-service"]}'
+          echo "$svc" | jq -e '(.service | length) > 0' >/dev/null \
+            || { echo "::error::empty inventory"; exit 1; }
+          echo "services=$svc" >> "$GITHUB_OUTPUT"
+      - name: Validate version tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+            || { echo "::error::$GITHUB_REF_NAME != semver"; exit 1; }
   build:
     needs: [inventory]
     strategy:
-      matrix:  ${{ fromJSON(needs.inventory.outputs.services) }}
+      matrix: ${{ fromJSON(needs.inventory.outputs.services) }}
     env:
       DOCKER_SERVICE_NAME: ${{ matrix.service }}
     name: Build and Push ${{ matrix.service }}
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v7
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Registry
@@ -55,7 +49,6 @@ jobs:
           registry: ${{ env.DOCKER_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -65,7 +58,6 @@ jobs:
           tags: |
             type=sha,prefix=,format=long
             type=semver,pattern={{version}}
-
       - name: Build and push ${{ matrix.service }}
         uses: docker/build-push-action@v6
         with:
@@ -78,12 +70,12 @@ jobs:
   verify:
     needs: [build, inventory]
     strategy:
-      matrix:  ${{ fromJSON(needs.inventory.outputs.services) }}
+      matrix: ${{ fromJSON(needs.inventory.outputs.services) }}
     runs-on: ubuntu-latest
     steps:
       - name: Verify GHCR image
         env:
-         SHA: ${{ github.sha }}
+          SHA: ${{ github.sha }}
         run: |
           for svc in ${{ matrix.service }}; do
                 tok=$(curl -fsS "https://$DOCKER_REGISTRY/token?scope=repository:$DOCKER_IMAGE_NAME-$svc:pull&service=$DOCKER_REGISTRY" | jq -r .token)
@@ -94,4 +86,44 @@ jobs:
                 echo "$DOCKER_IMAGE_NAME-$svc:$SHA -> $code"
                 [ "$code" = "200" ] || { echo "::error::image $svc:$SHA not found in GHCR"; exit 1; }
               done
-  
+  bump-tag:
+    needs:
+      - verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout shop-infra
+        uses: actions/checkout@v4
+        with:
+          repository: Olovat/shop-infra
+          ref: dev
+          ssh-key: ${{ secrets.SHOP_INFRA_DEPLOY_KEY }}
+      - name: Bump image SHA
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for f in gitops/tenants/shop/*/deployment.yaml; do
+            sed -i -E \
+              -e "s#(ghcr\.io/eternity8c/shop-[a-z-]+:)[0-9a-f]{40}#\1${SHA}#g" \
+              -e "s#(app\.kubernetes\.io/version: )[0-9a-f]{40}#\1${SHA}#g" \
+              "$f"
+          done
+          git --no-pager diff --stat
+      - name: Commit and push
+        run: |
+            set -euo pipefail
+            git config user.name  "ci"
+            git config user.email "ci@noreply.github.com"
+            git add gitops/tenants/shop
+            if git diff --cached --quiet; then
+              echo "up to date"
+              exit 0
+            fi
+            git commit -m "deploy: ${SHA:0:12} (${GITHUB_REPOSITORY}@${SHA:0:12})"
+            for i in 1 2 3; do
+              git push origin HEAD:dev && exit 0
+              git pull --rebase origin dev
+            done
+            echo "::error::push failed"
+            exit 1
